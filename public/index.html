@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ar">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SUST eLibrary</title>
+  <style>
+    body{font-family:system-ui;max-width:720px;margin:30px auto;padding:0 12px}
+    a{display:block;padding:10px;border:1px solid #ddd;border-radius:10px;margin:8px 0;text-decoration:none;color:#111}
+    small{color:#666}
+  </style>
+</head>
+<body>
+  <h2>مكتبة ملفات SUST</h2>
+  <p><small>قائمة الملفات من R2</small></p>
+  <div id="list">جاري التحميل…</div>
+
+<script>
+async function load(){
+  const res = await fetch('/list');
+  const data = await res.json();
+  const el = document.getElementById('list');
+  if (!data.length) { el.innerHTML = 'مافي ملفات حالياً.'; return; }
+  el.innerHTML = data.map(x => `
+    <a href="/file/${encodeURIComponent(x.key)}">
+      ${x.key} <br><small>${x.size} bytes</small>
+    </a>
+  `).join('');
+}
+load().catch(()=>{ document.getElementById('list').innerHTML='حصل خطأ في جلب القائمة'; });
+</script>
+</body>
+</html>
